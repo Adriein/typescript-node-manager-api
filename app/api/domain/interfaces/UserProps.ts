@@ -1,6 +1,6 @@
 export default interface UserProps {
   id?: number;
   email?: string;
-  encryptedPassword?: string;
+  password?: string;
   user_status?: number;
 }

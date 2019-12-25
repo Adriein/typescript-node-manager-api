@@ -4,11 +4,11 @@ import util from "util";
 import User from "../domain/models/User";
 
 export default class Validation {
-  private model: User;
+  private user: User;
   private scrypt = util.promisify(crypto.scrypt);
 
   constructor() {
-    this.model = new User({});
+    this.user = User.buildUser({});
   }
 
   get requireEmail(): ValidationChain {
@@ -18,10 +18,8 @@ export default class Validation {
       .isEmail()
       .withMessage("Must be valid email")
       .custom(async email => {
-        const existingUser = await this.model.findOneBy({
-          email
-        });
-        if (existingUser) {
+        this.user.findOneBy({ email });
+        if (this.user.exists()) {
           throw new Error("Email in use");
         }
       });
@@ -41,11 +39,11 @@ export default class Validation {
       .isEmail()
       .withMessage("Must provide a valid email")
       .custom(async email => {
-        const existingUser = await this.model.findOneBy({
+        await this.user.findOneBy({
           email
         });
 
-        if (!existingUser) {
+        if (!this.user.exists()) {
           throw new Error("Email not found");
         }
       });
@@ -55,15 +53,16 @@ export default class Validation {
     return check("password")
       .trim()
       .custom(async (password, { req }) => {
-        const { email }  = req.body;
-        const user = await this.model.findOneBy({
+        const { email } = req.body;
+        await this.user.findOneBy({
           email
         });
 
-        if(!await this.comparePassword(password, user?.get('encryptedPassword')!)){
-            throw new Error('Invalid password');
+        if (
+          !(await this.comparePassword(password, this.user?.get("password")!))
+        ) {
+          throw new Error("Invalid password");
         }
-
       });
   }
 
@@ -72,7 +71,7 @@ export default class Validation {
     storedPassword: string
   ): Promise<boolean> {
     const [hashed, salt] = storedPassword.split(".");
-   
+
     const hashedGiven: any = await this.scrypt(givenPassword, salt, 64);
     return hashedGiven.toString("hex") == hashed;
   }
@@ -82,6 +81,4 @@ export default class Validation {
 
     return `${buffer.toString("hex")}.${saltedPassword}`;
   }
-
-  
 }

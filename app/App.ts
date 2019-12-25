@@ -3,6 +3,7 @@ import cookieSession from "cookie-session";
 import { Router } from "express";
 import bodyParser from "body-parser";
 import AuthRoutes from "./api/routes/auth/AuthRoutes";
+import AdminRoutes from "./api/routes/admin/AdminRoutes";
 
 
 export default class App {
@@ -34,6 +35,7 @@ export default class App {
 
   private setUpRoutes() {
     const authRoutes = new AuthRoutes(this.router);
+    const adminRoutes = new AdminRoutes(this.router);
 
     this.app.use(authRoutes.router);
   }

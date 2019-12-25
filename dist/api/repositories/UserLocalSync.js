@@ -53,7 +53,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var LocalSync_1 = __importDefault(require("./LocalSync"));
-var User_1 = __importDefault(require("../domain/models/User"));
 var UserLocalSync = /** @class */ (function (_super) {
     __extends(UserLocalSync, _super);
     function UserLocalSync() {
@@ -61,7 +60,7 @@ var UserLocalSync = /** @class */ (function (_super) {
     }
     UserLocalSync.prototype.findOneBy = function (searchParams) {
         return __awaiter(this, void 0, void 0, function () {
-            var fieldName, user, id, email, password, user_status, encryptedPassword, error_1;
+            var fieldName, userProps, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -69,13 +68,11 @@ var UserLocalSync = /** @class */ (function (_super) {
                         fieldName = Object.keys(searchParams)[0];
                         return [4 /*yield*/, this.db.query("SELECT * FROM user_profile WHERE " + fieldName + "='" + searchParams[fieldName] + "'")];
                     case 1:
-                        user = (_a.sent())[0];
-                        if (!user) {
-                            return [2 /*return*/, undefined];
+                        userProps = (_a.sent())[0];
+                        if (!userProps) {
+                            throw new Error("Not user found");
                         }
-                        id = user.id, email = user.email, password = user.password, user_status = user.user_status;
-                        encryptedPassword = password;
-                        return [2 /*return*/, new User_1.default({ id: id, email: email, encryptedPassword: encryptedPassword, user_status: user_status })];
+                        return [2 /*return*/, userProps];
                     case 2:
                         error_1 = _a.sent();
                         throw error_1;
@@ -84,15 +81,17 @@ var UserLocalSync = /** @class */ (function (_super) {
             });
         });
     };
-    UserLocalSync.prototype.save = function (user) {
+    UserLocalSync.prototype.save = function (userProps) {
         return __awaiter(this, void 0, void 0, function () {
-            var error_2;
+            var response, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.db.query("INSERT INTO user_profile (email, password, user_status) VALUES ('" + user.get("email") + "', '" + user.get("encryptedPassword") + "', '" + user.get("user_status") + "')")];
-                    case 1: return [2 /*return*/, _a.sent()];
+                        return [4 /*yield*/, this.db.query("INSERT INTO user_profile (email, password, user_status) VALUES ('" + userProps.email + "', '" + userProps.password + "', '" + userProps.user_status + "')")];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response.insertId];
                     case 2:
                         error_2 = _a.sent();
                         throw new Error("Error creating the user. " + error_2);
@@ -103,18 +102,15 @@ var UserLocalSync = /** @class */ (function (_super) {
     };
     UserLocalSync.prototype.findAll = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var users, error_3;
+            var userProps, error_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, this.db.query("SELECT * FROM user_profile")];
                     case 1:
-                        users = _a.sent();
-                        return [2 /*return*/, users.map(function (user) {
-                                var email = user.email, encryptedPassword = user.encryptedPassword, user_status = user.user_status;
-                                return new User_1.default({ email: email, encryptedPassword: encryptedPassword, user_status: user_status });
-                            })];
+                        userProps = _a.sent();
+                        return [2 /*return*/, userProps];
                     case 2:
                         error_3 = _a.sent();
                         throw error_3;

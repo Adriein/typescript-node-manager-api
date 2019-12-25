@@ -46,7 +46,7 @@ var User_1 = __importDefault(require("../domain/models/User"));
 var Validation = /** @class */ (function () {
     function Validation() {
         this.scrypt = util_1.default.promisify(crypto_1.default.scrypt);
-        this.model = new User_1.default({});
+        this.user = User_1.default.buildUser({});
     }
     Object.defineProperty(Validation.prototype, "requireEmail", {
         get: function () {
@@ -57,19 +57,12 @@ var Validation = /** @class */ (function () {
                 .isEmail()
                 .withMessage("Must be valid email")
                 .custom(function (email) { return __awaiter(_this, void 0, void 0, function () {
-                var existingUser;
                 return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.model.findOneBy({
-                                email: email
-                            })];
-                        case 1:
-                            existingUser = _a.sent();
-                            if (existingUser) {
-                                throw new Error("Email in use");
-                            }
-                            return [2 /*return*/];
+                    this.user.findOneBy({ email: email });
+                    if (this.user.exists()) {
+                        throw new Error("Email in use");
                     }
+                    return [2 /*return*/];
                 });
             }); });
         },
@@ -95,15 +88,14 @@ var Validation = /** @class */ (function () {
                 .isEmail()
                 .withMessage("Must provide a valid email")
                 .custom(function (email) { return __awaiter(_this, void 0, void 0, function () {
-                var existingUser;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.model.findOneBy({
+                        case 0: return [4 /*yield*/, this.user.findOneBy({
                                 email: email
                             })];
                         case 1:
-                            existingUser = _a.sent();
-                            if (!existingUser) {
+                            _a.sent();
+                            if (!this.user.exists()) {
                                 throw new Error("Email not found");
                             }
                             return [2 /*return*/];
@@ -122,21 +114,21 @@ var Validation = /** @class */ (function () {
                 .custom(function (password, _a) {
                 var req = _a.req;
                 return __awaiter(_this, void 0, void 0, function () {
-                    var email, user;
+                    var email;
                     var _b;
                     return __generator(this, function (_c) {
                         switch (_c.label) {
                             case 0:
                                 email = req.body.email;
-                                return [4 /*yield*/, this.model.findOneBy({
+                                return [4 /*yield*/, this.user.findOneBy({
                                         email: email
                                     })];
                             case 1:
-                                user = _c.sent();
-                                return [4 /*yield*/, this.comparePassword(password, (_b = user) === null || _b === void 0 ? void 0 : _b.get('encryptedPassword'))];
+                                _c.sent();
+                                return [4 /*yield*/, this.comparePassword(password, (_b = this.user) === null || _b === void 0 ? void 0 : _b.get("password"))];
                             case 2:
                                 if (!(_c.sent())) {
-                                    throw new Error('Invalid password');
+                                    throw new Error("Invalid password");
                                 }
                                 return [2 /*return*/];
                         }

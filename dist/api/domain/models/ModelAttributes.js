@@ -11,6 +11,9 @@ var ModelAttributes = /** @class */ (function () {
     ModelAttributes.prototype.set = function (update) {
         Object.assign(this.data, update);
     };
+    ModelAttributes.prototype.getAll = function () {
+        return this.data;
+    };
     return ModelAttributes;
 }());
 exports.default = ModelAttributes;

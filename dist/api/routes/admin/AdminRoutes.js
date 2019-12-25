@@ -40,71 +40,28 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var User_1 = __importDefault(require("../../domain/models/User"));
-var Validation_1 = __importDefault(require("../Validation"));
-var express_validator_1 = require("express-validator");
-var AuthRoutes = /** @class */ (function () {
-    function AuthRoutes(router) {
+var Middelwares_1 = __importDefault(require("../Middelwares"));
+var AdminRoutes = /** @class */ (function () {
+    function AdminRoutes(router) {
+        this.middelware = new Middelwares_1.default();
         this.router = router;
-        this.validator = new Validation_1.default();
         this.user = User_1.default.buildUser({});
-        this.loginRoute();
-        this.logoutRoute();
-        this.signupRoute();
+        this.adminDashboard();
     }
-    AuthRoutes.prototype.loginRoute = function () {
+    AdminRoutes.prototype.adminDashboard = function () {
         var _this = this;
-        this.router.get("/login", [this.validator.requireEmailExists, this.validator.requireValidPassword], function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-            var errors, email;
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+        this.router.get("/admin/dashboard", this.middelware.requireAuth, function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+            var _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0:
-                        errors = express_validator_1.validationResult(req);
-                        if (!errors.isEmpty()) {
-                            return [2 /*return*/, res.send(errors)];
-                        }
-                        email = req.body.email;
-                        return [4 /*yield*/, this.user.findOneBy({ email: email })];
-                    case 1:
-                        _b.sent();
-                        console.log(this.user);
-                        req.session.userId = this.user.get("id");
-                        return [2 /*return*/, res.send("You are logged in with id: " + ((_a = req.session) === null || _a === void 0 ? void 0 : _a.userId))];
+                        _b = (_a = res).send;
+                        return [4 /*yield*/, this.user.findAll()];
+                    case 1: return [2 /*return*/, _b.apply(_a, [_c.sent()])];
                 }
             });
         }); });
     };
-    AuthRoutes.prototype.logoutRoute = function () {
-        this.router.get("/logout", function (req, res) {
-            req.session = undefined;
-            res.send("Logged out");
-        });
-    };
-    AuthRoutes.prototype.signupRoute = function () {
-        var _this = this;
-        this.router.post("/signup", [this.validator.requireEmail, this.validator.requirePassword], function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-            var errors, _a, email, pass, password, id;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        errors = express_validator_1.validationResult(req);
-                        if (!errors.isEmpty()) {
-                            return [2 /*return*/, res.send(errors)];
-                        }
-                        _a = req.body, email = _a.email, pass = _a.pass;
-                        return [4 /*yield*/, this.validator.encryptPassword(pass)];
-                    case 1:
-                        password = _b.sent();
-                        this.user.set({ email: email, password: password });
-                        return [4 /*yield*/, this.user.save()];
-                    case 2:
-                        id = _b.sent();
-                        req.session.userId = id;
-                        return [2 /*return*/, res.send("The user created correctly")];
-                }
-            });
-        }); });
-    };
-    return AuthRoutes;
+    return AdminRoutes;
 }());
-exports.default = AuthRoutes;
+exports.default = AdminRoutes;

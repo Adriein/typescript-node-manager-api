@@ -7,12 +7,12 @@ import { validationResult } from "express-validator";
 export default class AuthRoutes {
   public router: Router;
   private validator: Validation;
-  private model: User
+  private user: User;
 
   constructor(router: Router) {
     this.router = router;
     this.validator = new Validation();
-    this.model = new User({});
+    this.user = User.buildUser({});
     this.loginRoute();
     this.logoutRoute();
     this.signupRoute();
@@ -30,9 +30,12 @@ export default class AuthRoutes {
 
         const { email } = req.body;
 
-        const user = await this.model.findOneBy({ email });
+        await this.user.findOneBy({ email });
+        
+        console.log(this.user);
+        
 
-        req.session!.userId = user?.get('id');
+        req.session!.userId = this.user.get("id");
 
         return res.send(`You are logged in with id: ${req.session?.userId}`);
       }
@@ -56,23 +59,19 @@ export default class AuthRoutes {
           return res.send(errors);
         }
 
-        const { email, password } = req.body;
-        const encryptedPassword = await this.validator.encryptPassword(password);
+        const { email, pass } = req.body;
+        const password = await this.validator.encryptPassword(
+          pass
+        );
 
-        const user: User = new User({
-          email,
-          encryptedPassword,
-          user_status: 1
-        });
+        this.user.set({ email, password });
 
-        const response: MySQLResponse = await this.model.save(user);
+        const id = await this.user.save();
 
-        req.session!.userId = response.insertId;
+        req.session!.userId = id;
 
         return res.send("The user created correctly");
       }
     );
   }
-
-  
 }

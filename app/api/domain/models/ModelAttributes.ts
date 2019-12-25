@@ -3,9 +3,13 @@ export default class ModelAttributes<T> {
 
   public get = <K extends keyof T>(propName: K): T[K] => {
     return this.data[propName];
-  }
+  };
 
   public set(update: T): void {
     Object.assign(this.data, update);
+  }
+
+  public getAll(): T {
+    return this.data;
   }
 }

@@ -7,6 +7,7 @@ var express_1 = __importDefault(require("express"));
 var cookie_session_1 = __importDefault(require("cookie-session"));
 var body_parser_1 = __importDefault(require("body-parser"));
 var AuthRoutes_1 = __importDefault(require("./api/routes/auth/AuthRoutes"));
+var AdminRoutes_1 = __importDefault(require("./api/routes/admin/AdminRoutes"));
 var App = /** @class */ (function () {
     function App() {
         this.app = express_1.default();
@@ -28,6 +29,7 @@ var App = /** @class */ (function () {
     };
     App.prototype.setUpRoutes = function () {
         var authRoutes = new AuthRoutes_1.default(this.router);
+        var adminRoutes = new AdminRoutes_1.default(this.router);
         this.app.use(authRoutes.router);
     };
     App.prototype.startServer = function () {
