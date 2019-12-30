@@ -9,7 +9,6 @@ export default class User extends Model<UserProps> {
   }
 
   public exists(): boolean {
-    return this.get('email')? true : false;
+    return this.get("email") ? true : false;
   }
-
 }

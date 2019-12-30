@@ -1,6 +1,5 @@
 import { Router, Request, Response } from "express";
 import User from "../../domain/models/User";
-import { MySQLResponse } from "../../domain/Types";
 import Validation from "../Validation";
 import { validationResult } from "express-validator";
 
@@ -30,10 +29,7 @@ export default class AuthRoutes {
 
         const { email } = req.body;
 
-        await this.user.findOneBy({ email });
-        
-        console.log(this.user);
-        
+        await this.user.findOne({ table: "user_profile", email });
 
         req.session!.userId = this.user.get("id");
 
@@ -60,11 +56,11 @@ export default class AuthRoutes {
         }
 
         const { email, pass } = req.body;
-        const password = await this.validator.encryptPassword(
-          pass
-        );
+        const password = await this.validator.encryptPassword(pass);
 
-        this.user.set({ email, password });
+        const user_status = 1;
+
+        this.user.set({ email, password, user_status });
 
         const id = await this.user.save();
 

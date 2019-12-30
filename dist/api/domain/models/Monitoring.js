@@ -52,50 +52,47 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var LocalSync_1 = __importDefault(require("./LocalSync"));
-var UserLocalSync = /** @class */ (function (_super) {
-    __extends(UserLocalSync, _super);
-    function UserLocalSync() {
-        return _super.call(this) || this;
+var Model_1 = __importDefault(require("./Model"));
+var MonitoringLocalSync_1 = __importDefault(require("../../repositories/MonitoringLocalSync"));
+var ModelAttributes_1 = __importDefault(require("./ModelAttributes"));
+var Monitoring = /** @class */ (function (_super) {
+    __extends(Monitoring, _super);
+    function Monitoring() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-    UserLocalSync.prototype.save = function (userProps) {
+    Monitoring.buildMonitoring = function (attrs) {
+        return new Monitoring(new ModelAttributes_1.default(attrs), new MonitoringLocalSync_1.default());
+    };
+    Monitoring.prototype.getPendingMonitoringsByUser = function (users) {
+        var _a;
         return __awaiter(this, void 0, void 0, function () {
-            var response, error_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var result, _i, users_1, user, pendingMonitorings;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.db.query("INSERT INTO user_profile (email, password, user_status) VALUES ('" + userProps.email + "', '" + userProps.password + "', '" + userProps.user_status + "')")];
+                        result = [];
+                        _i = 0, users_1 = users;
+                        _b.label = 1;
                     case 1:
-                        response = _a.sent();
-                        return [2 /*return*/, response.insertId];
+                        if (!(_i < users_1.length)) return [3 /*break*/, 4];
+                        user = users_1[_i];
+                        return [4 /*yield*/, this.find({
+                                table: "monitoring",
+                                user_id: (_a = user.id) === null || _a === void 0 ? void 0 : _a.toString(),
+                                pending: "1"
+                            })];
                     case 2:
-                        error_1 = _a.sent();
-                        throw new Error("Error creating the user. " + error_1);
-                    case 3: return [2 /*return*/];
+                        pendingMonitorings = _b.sent();
+                        result.push({ name: user.email, pending: pendingMonitorings.length });
+                        _b.label = 3;
+                    case 3:
+                        _i++;
+                        return [3 /*break*/, 1];
+                    case 4: return [2 /*return*/, result];
                 }
             });
         });
     };
-    UserLocalSync.prototype.findAll = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var userProps, error_2;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.db.query("SELECT * FROM user_profile")];
-                    case 1:
-                        userProps = _a.sent();
-                        return [2 /*return*/, userProps];
-                    case 2:
-                        error_2 = _a.sent();
-                        throw error_2;
-                    case 3: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    return UserLocalSync;
-}(LocalSync_1.default));
-exports.default = UserLocalSync;
+    return Monitoring;
+}(Model_1.default));
+exports.default = Monitoring;

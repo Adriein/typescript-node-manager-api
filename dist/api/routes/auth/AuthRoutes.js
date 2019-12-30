@@ -64,10 +64,9 @@ var AuthRoutes = /** @class */ (function () {
                             return [2 /*return*/, res.send(errors)];
                         }
                         email = req.body.email;
-                        return [4 /*yield*/, this.user.findOneBy({ email: email })];
+                        return [4 /*yield*/, this.user.findOne({ table: "user_profile", email: email })];
                     case 1:
                         _b.sent();
-                        console.log(this.user);
                         req.session.userId = this.user.get("id");
                         return [2 /*return*/, res.send("You are logged in with id: " + ((_a = req.session) === null || _a === void 0 ? void 0 : _a.userId))];
                 }
@@ -83,7 +82,7 @@ var AuthRoutes = /** @class */ (function () {
     AuthRoutes.prototype.signupRoute = function () {
         var _this = this;
         this.router.post("/signup", [this.validator.requireEmail, this.validator.requirePassword], function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-            var errors, _a, email, pass, password, id;
+            var errors, _a, email, pass, password, user_status, id;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -95,7 +94,8 @@ var AuthRoutes = /** @class */ (function () {
                         return [4 /*yield*/, this.validator.encryptPassword(pass)];
                     case 1:
                         password = _b.sent();
-                        this.user.set({ email: email, password: password });
+                        user_status = 1;
+                        this.user.set({ email: email, password: password, user_status: user_status });
                         return [4 /*yield*/, this.user.save()];
                     case 2:
                         id = _b.sent();

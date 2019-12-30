@@ -51,17 +51,26 @@ var Model = /** @class */ (function () {
     Model.prototype.set = function (data) {
         this.attributes.set(data);
     };
-    Model.prototype.findOneBy = function (searchParams) {
+    Model.prototype.findOne = function (searchParams) {
         return __awaiter(this, void 0, void 0, function () {
             var response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.sync.findOneBy(searchParams)];
+                    case 0: return [4 /*yield*/, this.sync.findOne(searchParams)];
                     case 1:
                         response = _a.sent();
-                        console.log(response);
                         this.attributes.set(response);
                         return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Model.prototype.find = function (searchParams) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.sync.find(searchParams)];
+                    case 1: return [2 /*return*/, _a.sent()];
                 }
             });
         });

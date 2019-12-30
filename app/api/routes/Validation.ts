@@ -18,7 +18,12 @@ export default class Validation {
       .isEmail()
       .withMessage("Must be valid email")
       .custom(async email => {
-        this.user.findOneBy({ email });
+        try {
+          await this.user.findOne({ table: 'user_profile', email });
+        } catch (error) {
+          console.log(error);
+        }
+
         if (this.user.exists()) {
           throw new Error("Email in use");
         }
@@ -26,7 +31,7 @@ export default class Validation {
   }
 
   get requirePassword(): ValidationChain {
-    return check("password")
+    return check("pass")
       .trim()
       .isLength({ min: 4, max: 20 })
       .withMessage("Password must be between 4 and 20 characters");
@@ -39,7 +44,8 @@ export default class Validation {
       .isEmail()
       .withMessage("Must provide a valid email")
       .custom(async email => {
-        await this.user.findOneBy({
+        await this.user.findOne({
+          table: 'user_profile',
           email
         });
 
@@ -54,7 +60,8 @@ export default class Validation {
       .trim()
       .custom(async (password, { req }) => {
         const { email } = req.body;
-        await this.user.findOneBy({
+        await this.user.findOne({
+          table: 'user_profile',
           email
         });
 

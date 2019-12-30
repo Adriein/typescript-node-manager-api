@@ -28,7 +28,7 @@ var User = /** @class */ (function (_super) {
         return new User(new ModelAttributes_1.default(attrs), new UserLocalSync_1.default());
     };
     User.prototype.exists = function () {
-        return this.get('email') ? true : false;
+        return this.get("email") ? true : false;
     };
     return User;
 }(Model_1.default));

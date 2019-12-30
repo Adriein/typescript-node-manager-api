@@ -57,12 +57,25 @@ var Validation = /** @class */ (function () {
                 .isEmail()
                 .withMessage("Must be valid email")
                 .custom(function (email) { return __awaiter(_this, void 0, void 0, function () {
+                var error_1;
                 return __generator(this, function (_a) {
-                    this.user.findOneBy({ email: email });
-                    if (this.user.exists()) {
-                        throw new Error("Email in use");
+                    switch (_a.label) {
+                        case 0:
+                            _a.trys.push([0, 2, , 3]);
+                            return [4 /*yield*/, this.user.findOne({ table: 'user_profile', email: email })];
+                        case 1:
+                            _a.sent();
+                            return [3 /*break*/, 3];
+                        case 2:
+                            error_1 = _a.sent();
+                            console.log(error_1);
+                            return [3 /*break*/, 3];
+                        case 3:
+                            if (this.user.exists()) {
+                                throw new Error("Email in use");
+                            }
+                            return [2 /*return*/];
                     }
-                    return [2 /*return*/];
                 });
             }); });
         },
@@ -71,7 +84,7 @@ var Validation = /** @class */ (function () {
     });
     Object.defineProperty(Validation.prototype, "requirePassword", {
         get: function () {
-            return express_validator_1.check("password")
+            return express_validator_1.check("pass")
                 .trim()
                 .isLength({ min: 4, max: 20 })
                 .withMessage("Password must be between 4 and 20 characters");
@@ -90,7 +103,8 @@ var Validation = /** @class */ (function () {
                 .custom(function (email) { return __awaiter(_this, void 0, void 0, function () {
                 return __generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.user.findOneBy({
+                        case 0: return [4 /*yield*/, this.user.findOne({
+                                table: 'user_profile',
                                 email: email
                             })];
                         case 1:
@@ -120,7 +134,8 @@ var Validation = /** @class */ (function () {
                         switch (_c.label) {
                             case 0:
                                 email = req.body.email;
-                                return [4 /*yield*/, this.user.findOneBy({
+                                return [4 /*yield*/, this.user.findOne({
+                                        table: 'user_profile',
                                         email: email
                                     })];
                             case 1:

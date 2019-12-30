@@ -13,12 +13,14 @@ export default class Model<T> {
     this.attributes.set(data);
   }
 
-  async findOneBy(searchParams: SearchParameters): Promise<void> {
-    
-    const response: T = await this.sync.findOneBy(searchParams);
-    console.log(response);
-    
+  async findOne(searchParams: SearchParameters): Promise<void> {
+    const response: T = await this.sync.findOne(searchParams);
+
     this.attributes.set(response);
+  }
+
+  async find(searchParams: SearchParameters): Promise<T[]> {
+    return await this.sync.find(searchParams);
   }
 
   findAll(): Promise<T[]> {

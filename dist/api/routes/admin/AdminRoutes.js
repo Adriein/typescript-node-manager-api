@@ -41,23 +41,29 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var User_1 = __importDefault(require("../../domain/models/User"));
 var Middelwares_1 = __importDefault(require("../Middelwares"));
+var Monitoring_1 = __importDefault(require("../../domain/models/Monitoring"));
 var AdminRoutes = /** @class */ (function () {
     function AdminRoutes(router) {
         this.middelware = new Middelwares_1.default();
         this.router = router;
         this.user = User_1.default.buildUser({});
+        this.monitoring = Monitoring_1.default.buildMonitoring({});
         this.adminDashboard();
     }
     AdminRoutes.prototype.adminDashboard = function () {
         var _this = this;
-        this.router.get("/admin/dashboard", this.middelware.requireAuth, function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-            var _a, _b;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+        this.router.get("/admin/dashboard/users_overview", this.middelware.requireAuth, function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+            var _a, _b, _c, _d;
+            return __generator(this, function (_e) {
+                switch (_e.label) {
                     case 0:
                         _b = (_a = res).send;
+                        _d = (_c = this.monitoring).getPendingMonitoringsByUser;
                         return [4 /*yield*/, this.user.findAll()];
-                    case 1: return [2 /*return*/, _b.apply(_a, [_c.sent()])];
+                    case 1: return [4 /*yield*/, _d.apply(_c, [_e.sent()])];
+                    case 2:
+                        _b.apply(_a, [_e.sent()]);
+                        return [2 /*return*/];
                 }
             });
         }); });

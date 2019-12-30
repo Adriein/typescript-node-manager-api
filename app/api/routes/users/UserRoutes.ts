@@ -3,7 +3,7 @@ import User from "../../domain/models/User";
 import Middelwares from "../Middelwares";
 import Monitoring from "../../domain/models/Monitoring";
 
-export default class AdminRoutes {
+export default class UserRoutes {
   public router: Router;
   private user: User;
   private monitoring: Monitoring;

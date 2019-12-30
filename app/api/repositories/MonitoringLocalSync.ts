@@ -1,14 +1,13 @@
 import LocalSync from "./LocalSync";
-import User from "../domain/models/User";
-import UserProps from "../domain/interfaces/UserProps";
+import MonitoringProps from "../domain/interfaces/MonitoringProps";
 import { SearchParameters, MySQLResponse } from "../domain/Types";
 
-export default class UserLocalSync extends LocalSync<UserProps> {
+export default class MonitoringLocalSync extends LocalSync<MonitoringProps> {
   constructor() {
     super();
   }
 
-  public async save(userProps: UserProps): Promise<number> {
+  public async save(userProps: MonitoringProps): Promise<number> {
     try {
       const response: MySQLResponse = await this.db.query(
         `INSERT INTO user_profile (email, password, user_status) VALUES ('${userProps.email}', '${userProps.password}', '${userProps.user_status}')`
@@ -20,10 +19,10 @@ export default class UserLocalSync extends LocalSync<UserProps> {
     }
   }
 
-  public async findAll(): Promise<UserProps[]> {
+  public async findAll(): Promise<MonitoringProps[]> {
     try {
-      const userProps: UserProps[] = await this.db.query(
-        `SELECT * FROM user_profile`
+      const userProps: MonitoringProps[] = await this.db.query(
+        `SELECT * FROM monitoring`
       );
 
       return userProps;

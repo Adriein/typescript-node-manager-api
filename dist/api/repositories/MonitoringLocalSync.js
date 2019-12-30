@@ -53,12 +53,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var LocalSync_1 = __importDefault(require("./LocalSync"));
-var UserLocalSync = /** @class */ (function (_super) {
-    __extends(UserLocalSync, _super);
-    function UserLocalSync() {
+var MonitoringLocalSync = /** @class */ (function (_super) {
+    __extends(MonitoringLocalSync, _super);
+    function MonitoringLocalSync() {
         return _super.call(this) || this;
     }
-    UserLocalSync.prototype.save = function (userProps) {
+    MonitoringLocalSync.prototype.save = function (userProps) {
         return __awaiter(this, void 0, void 0, function () {
             var response, error_1;
             return __generator(this, function (_a) {
@@ -77,14 +77,14 @@ var UserLocalSync = /** @class */ (function (_super) {
             });
         });
     };
-    UserLocalSync.prototype.findAll = function () {
+    MonitoringLocalSync.prototype.findAll = function () {
         return __awaiter(this, void 0, void 0, function () {
             var userProps, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.db.query("SELECT * FROM user_profile")];
+                        return [4 /*yield*/, this.db.query("SELECT * FROM monitoring")];
                     case 1:
                         userProps = _a.sent();
                         return [2 /*return*/, userProps];
@@ -96,6 +96,6 @@ var UserLocalSync = /** @class */ (function (_super) {
             });
         });
     };
-    return UserLocalSync;
+    return MonitoringLocalSync;
 }(LocalSync_1.default));
-exports.default = UserLocalSync;
+exports.default = MonitoringLocalSync;
